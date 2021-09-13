@@ -19,14 +19,17 @@ export default function Home() {
   const [errShortId, setErrShortId] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [complete, setComplete] = useState(false);
+  const [error, setError] = useState(false);
   const [, setToast] = useToasts();
 
   useEffect(() => {
     setErrTargetUrl(undefined);
+    setError(false);
   }, [targetUrl]);
 
   useEffect(() => {
     setErrShortId(undefined);
+    setError(false);
   }, [shortId]);
 
   return (
@@ -38,10 +41,12 @@ export default function Home() {
           if (!validateUrl(targetUrl)) {
             valid = false;
             setErrTargetUrl("Invalid URL");
+            setError(true);
           }
           if (!validateShortId(shortId)) {
             valid = false;
             setErrShortId("Invalid Short ID");
+            setError(true);
           }
           if (valid) {
             setLoading(true);
@@ -57,7 +62,7 @@ export default function Home() {
                 (shortId) =>
                   `${window.location.protocol}//${window.location.host}/${shortId}`
               );
-            }
+            } else setError(true);
           }
         }}
       >
@@ -123,7 +128,7 @@ export default function Home() {
             <Button
               auto
               scale={0.6}
-              type="success"
+              type={error ? "error" : "success"}
               htmlType="submit"
               loading={loading}
               disabled={complete}
